@@ -10,7 +10,6 @@ async def root():
 
 @app.get('/chat/recieve')
 def recieve_massages():
-#    return db
     with open('search.json',mode='r') as myfile:
         json_data = json.load(myfile)
         data_info_arr= []
