@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 import json
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional, Union,List
 
 app = FastAPI()
 
@@ -20,43 +21,36 @@ app.add_middleware(
 
 
 @app.get('/')
-def json_data():
+async def json_data_by_type(type: List[Union[str, None]] = Query(default=None)):
     with open('search.json',mode='r') as myfile:
         json_data = json.load(myfile)
         data_arr = []
         for i in json_data:
-            operator = i["operator"]
-            if i.get("operating_manager",None) is not None:
-                operating_manager = i["operating_manager"]
-                data_arr.append(operating_manager)
-            site = i["site"]
-            ordz = i["ordz"]
-            category = i["category"]
-            description = i["description"]
-            next_inspection = i["next_inspection"]
-            data_arr.extend((operator, site, ordz, category, description ,next_inspection))
-
-        return data_arr
-
-@app.get('/{type}/')
-def json_data_by_type(type: str):
-    with open('search.json',mode='r') as myfile:
-        json_data = json.load(myfile)
-        data_arr = []
-        for i in json_data:
-            if type == "category":
-                data_arr.append(i["category"])
-            elif type == "description":
-                data_arr.append(i["description"])
-            elif type == "next_inspection":
-                data_arr.append(i["next_inspection"])
-            elif type == "operating_manager":
+            if type is not None:
+                for q in type:
+                    if q == 'category':
+                        data_arr.append(i['category'])
+                    if q == 'description':
+                        data_arr.append(i['description'])
+                    if q == 'next_inspection':
+                        data_arr.append(i['next_inspection'])
+                    if q == 'operating_manager' and i.get('operating_manager', None) is not None:
+                        data_arr.append(i['operating_manager'])
+                    if q == 'operator':
+                        data_arr.append(i['operator'])
+                    if q == 'ordz':
+                        data_arr.append(i['ordz'])
+                    if q == 'site':
+                        data_arr.append(i['site'])
+            else:
+                operator = i["operator"]
                 if i.get("operating_manager",None) is not None:
-                    data_arr.append(i["operating_manager"])
-            elif type == "operator":
-                data_arr.append(i["operator"])
-            elif type == "ordz":
-                data_arr.append(i["ordz"])
-            elif type == "site":
-                data_arr.append(i["site"])
+                    operating_manager = i["operating_manager"]
+                    data_arr.append(operating_manager)
+                site = i["site"]
+                ordz = i["ordz"]
+                category = i["category"]
+                description = i["description"]
+                next_inspection = i["next_inspection"]
+                data_arr.extend((operator, site, ordz, category, description ,next_inspection))
         return data_arr
