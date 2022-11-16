@@ -4,11 +4,7 @@ import json
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@app.get('/chat/recieve')
+@app.get('/')
 def recieve_massages():
     with open('search.json',mode='r') as myfile:
         json_data = json.load(myfile)
