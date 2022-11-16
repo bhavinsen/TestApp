@@ -5,12 +5,11 @@ app = FastAPI()
 
 
 @app.get('/')
-def recieve_massages():
+def json_data():
     with open('search.json',mode='r') as myfile:
         json_data = json.load(myfile)
-        data_info_arr= []
+        data_arr = []
         for i in json_data:
-            data_arr = []
             operator = i["operator"]
             if i.get("operating_manager",None) is not None:
                 operating_manager = i["operating_manager"]
@@ -21,6 +20,5 @@ def recieve_massages():
             description = i["description"]
             next_inspection = i["next_inspection"]
             data_arr.extend((operator, site, ordz, category, description ,next_inspection))
-            data_info_arr.append(data_arr)
 
-        return data_info_arr
+        return data_arr
