@@ -37,3 +37,26 @@ def json_data():
             data_arr.extend((operator, site, ordz, category, description ,next_inspection))
 
         return data_arr
+
+@app.get('/{type}/')
+def json_data_by_type(type: str):
+    with open('search.json',mode='r') as myfile:
+        json_data = json.load(myfile)
+        data_arr = []
+        for i in json_data:
+            if type == "category":
+                data_arr.append(i["category"])
+            elif type == "description":
+                data_arr.append(i["description"])
+            elif type == "next_inspection":
+                data_arr.append(i["next_inspection"])
+            elif type == "operating_manager":
+                if i.get("operating_manager",None) is not None:
+                    data_arr.append(i["operating_manager"])
+            elif type == "operator":
+                data_arr.append(i["operator"])
+            elif type == "ordz":
+                data_arr.append(i["ordz"])
+            elif type == "site":
+                data_arr.append(i["site"])
+        return data_arr
